@@ -39,12 +39,44 @@
   {% endif %}
 {% endif %}
 
+{% assign ogtype = "website" %}
 {% if page.date %}
-  <meta property="og:type" content="article" />
-  <meta property="article:published_time" content="{{ page.date | date_to_xmlschema }}" />
+  {% if page.category == "monographs" or page.category == "booklets" %}
+    <meta property="og:type" content="book" />
+    {% assign ogtype = "book" %}
+    <meta property="book:release_date" content="{{ page.year }}" />
+  {% elsif page.category == "av" and page.subtype == "music" %}
+    <meta property="og:type" content="music.song" />
+    {% assign ogtype = "music" %}
+  {% elsif page.collection == "authors" %}
+    <meta property="og:type" content="profile" />
+    {% assign ogtype = "profile" %}
+    <meta property="profile:first_name" content="{{ page.title | split: " " | first }}" />
+    <meta property="profile:last_name" content="{{ page.title | split: " " | shift | join: " " }}" />
+    <meta property="profile:username" content="{{ page.slug }}" />
+  {% else %}
+    <meta property="og:type" content="article" />
+    {% assign ogtype = "article" %}
+    <meta property="article:published_time" content="{{ page.date | date_to_xmlschema }}" />
+  {% endif %}
 {% else %}
   <meta property="og:type" content="website" />
 {% endif %}
+
+{% if page.course %}
+  <meta property="{{ ogtype }}:tag" content="{{ page.course }}" />
+{% endif %}
+{% for t in page.tags %}
+  <meta property="{{ ogtype }}:tag" content="{{ t }}" />
+{% endfor %}
+{% assign apool = "" | split: "" | push: page.author | push: page.translator %}
+{% for a in page.authors %}{% assign apool = apool | push: a %}{% endfor %}
+{% for a in page.lecturers %}{% assign apool = apool | push: a %}{% endfor %}
+{% for a in apool %}
+  {% unless a contains " " or a == nil %}
+    <meta property="{{ ogtype }}:{% if ogtype == "music" %}musician{% else %}author{% endif %}" content="{{ "/authors/" | append: a | absolute_url }}" />
+  {% endunless %}
+{% endfor %}
 
 {% if paginator.previous_page %}
   <link rel="prev" href="{{ paginator.previous_page_path | absolute_url }}" />
