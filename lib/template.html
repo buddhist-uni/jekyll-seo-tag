@@ -73,7 +73,7 @@
 {% for a in page.authors %}{% assign apool = apool | push: a %}{% endfor %}
 {% for a in page.lecturers %}{% assign apool = apool | push: a %}{% endfor %}
 {% for a in apool %}
-  {% unless a contains " " or a == nil %}
+  {% unless a contains " " or a == nil or a == "others" %}
     <meta property="{{ ogtype }}:{% if ogtype == "music" %}musician{% else %}author{% endif %}" content="{{ "/authors/" | append: a | absolute_url }}" />
   {% endunless %}
 {% endfor %}
