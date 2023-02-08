@@ -40,7 +40,19 @@ module Jekyll
       def image_hash
         @image_hash ||= begin
           image_meta = page["image"]
-
+          if not image_meta and page["olid"]
+            image_meta = "https://covers.openlibrary.org/b/olid/"+page["olid"]+"-L.jpg?default=false"
+          end
+          if not image_meta
+            external_url = page["external_url"]
+            if external_url.is_a?(String) and external_url.include?("youtu") and not external_url.include?("list")
+              youtuberegex = /(?:youtube(?:-nocookie)?\.com\/(?:[^\/\n\s]+\/\S+\/|(?:v|e(?:mbed)?)\/|\S*?[?&]v=)|youtu\.be\/)([a-zA-Z0-9_-]{11})/
+              match = youtuberegex.match(page["external_url"])
+              if match && match[1].is_a?(String)
+                image_meta = "https://img.youtube.com/vi/"+match[1]+"/0.jpg"
+              end
+            end
+          end
           case image_meta
           when Hash
             { "path" => nil }.merge!(image_meta)
