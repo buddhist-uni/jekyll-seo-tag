@@ -53,11 +53,36 @@ module Jekyll
               end
             end
           end
+          # Generic fallback images
+          if not image_meta
+            if page["url"].include?("course")
+                image_meta = "https://buddhistuniversity.net/imgs/burmese-nuns-studying.jpg"
+            elsif page["url"].include?("paper")
+                image_meta = "https://buddhistuniversity.net/imgs/origami.jpg"
+            elsif page["url"].include?("blog")
+                image_meta = "https://buddhistuniversity.net/imgs/monk-slap.jpeg"
+            elsif page["url"].include?("article")
+                image_meta = "https://buddhistuniversity.net/imgs/tibetan_prayer_flags.jpg"
+            elsif page["url"].include?("canon")
+                image_meta = "https://buddhistuniversity.net/imgs/tags/tags/sea-manuscript-closeup.jpg"
+            else
+                image_meta = ["https://buddhistuniversity.net/imgs/Kyoto-temple.jpg",
+                  "https://buddhistuniversity.net/imgs/buddhism/Amaravati_Autumn.jpg",
+                  "https://buddhistuniversity.net/imgs/function/stupas.jpg",
+                  "https://buddhistuniversity.net/imgs/tags/tags/Meditating_in_Madison_Square_Park.jpg",
+                  "https://buddhistuniversity.net/imgs/tags/banners/elephant-taming-manuscript.jpg",
+                  "https://buddhistuniversity.net/imgs/function/Chion-in.jpg",
+                  "https://buddhistuniversity.net/assets/imgs/ms-icon-310x310.png",
+                  "https://buddhistuniversity.net/imgs/nostalgic-gate.jpeg"]
+            end
+          end
           case image_meta
           when Hash
             { "path" => nil }.merge!(image_meta)
           when String
             { "path" => image_meta }
+          when Array
+            { "path" => image_meta.sample }
           else
             { "path" => nil }
           end
