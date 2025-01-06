@@ -53,6 +53,12 @@ module Jekyll
               end
             end
           end
+          if not image_meta and page["drive_links"] and ["pdf","mp4"].include? page["formats"][0]
+            drivelink = page["drive_links"][0].split("/")[5]
+            if drivelink and [28,33,44].include? drivelink.length
+              image_meta = "https://drive.google.com/thumbnail?authuser=0&sz=w1000&id="+drivelink
+            end
+          end
           # Generic fallback images
           if not image_meta
             if page["url"].include?("course")
